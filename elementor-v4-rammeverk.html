@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementor V4 — Rammeverk for nye nettsider</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+:root{
+  --bg:#fafaf8;--bg2:#f2f1ed;--bg3:#e8e7e2;
+  --text:#1a1a18;--text2:#5c5b57;--text3:#8a8983;
+  --accent:#1d6b4f;--accent-bg:#e4f3ec;--accent-light:#2d9b70;
+  --warn:#b45309;--warn-bg:#fef3e2;
+  --info:#1e5fa0;--info-bg:#e6f0fa;
+  --border:#d8d7d2;--border2:#c2c1bc;
+  --card:#ffffff;--card-shadow:0 1px 3px rgba(0,0,0,.04);
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+  --radius:10px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#141413;--bg2:#1e1e1c;--bg3:#2a2a27;
+  --text:#e4e3de;--text2:#a3a29c;--text3:#73726c;
+  --accent:#3db882;--accent-bg:#15302a;--accent-light:#4fd699;
+  --warn:#f59e0b;--warn-bg:#2a1f0a;
+  --info:#60a5fa;--info-bg:#0f2240;
+  --border:#333330;--border2:#444440;
+  --card:#1a1a18;--card-shadow:0 1px 3px rgba(0,0,0,.2);
+}}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+header{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border)}
+header h1{font-size:1.75rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.35rem}
+header p{color:var(--text2);font-size:.95rem;max-width:600px}
+.badge{display:inline-block;background:var(--accent-bg);color:var(--accent);font-size:.72rem;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.02em;margin-bottom:.75rem}
+
+nav.toc{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:.75rem 0;margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav.toc a{display:inline-block;font-size:.78rem;font-weight:500;color:var(--text3);text-decoration:none;padding:6px 14px;border-radius:20px;transition:all .15s}
+nav.toc a:hover{color:var(--text);background:var(--bg2)}
+nav.toc a.active{color:var(--accent);background:var(--accent-bg)}
+
+section{padding:2.5rem 0 1rem;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+section h2{font-size:1.25rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.25rem}
+section h2 span{color:var(--text3);font-weight:400;font-size:.85rem;margin-left:.5rem}
+section>p.intro{color:var(--text2);font-size:.9rem;margin-bottom:1.5rem;max-width:640px}
+h3{font-size:1rem;font-weight:500;margin:1.75rem 0 .75rem;color:var(--text)}
+h4{font-size:.85rem;font-weight:500;margin:1.25rem 0 .5rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--card-shadow)}
+.card.highlight{border-left:3px solid var(--accent);padding-left:1.1rem}
+.card.warn{border-left:3px solid var(--warn);padding-left:1.1rem;background:var(--warn-bg)}
+.card.info{border-left:3px solid var(--info);padding-left:1.1rem;background:var(--info-bg)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+th{text-align:left;font-weight:500;color:var(--text2);padding:.5rem .75rem;border-bottom:2px solid var(--border);font-size:.78rem;text-transform:uppercase;letter-spacing:.03em}
+td{padding:.6rem .75rem;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+
+code{font-family:var(--mono);font-size:.82rem;background:var(--bg2);padding:2px 7px;border-radius:4px;color:var(--accent)}
+.code-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;font-family:var(--mono);font-size:.8rem;line-height:1.7;overflow-x:auto;margin:.75rem 0;white-space:pre;color:var(--text)}
+.code-block .cm{color:var(--text3)}
+
+ul,ol{padding-left:1.25rem;margin:.5rem 0}
+li{margin:.4rem 0;font-size:.9rem;line-height:1.55}
+li code{font-size:.78rem}
+
+.tag{display:inline-block;font-size:.72rem;font-weight:500;padding:2px 8px;border-radius:4px;margin-right:4px}
+.tag.global{background:var(--accent-bg);color:var(--accent)}
+.tag.local{background:#fce4ec;color:#b71c60}
+.tag.var{background:var(--info-bg);color:var(--info)}
+.tag.comp{background:var(--warn-bg);color:var(--warn)}
+
+.checklist{list-style:none;padding:0}
+.checklist li{padding:.5rem 0 .5rem 2rem;position:relative;font-size:.88rem;border-bottom:1px solid var(--border)}
+.checklist li:last-child{border-bottom:none}
+.checklist li::before{content:'';position:absolute;left:0;top:.65rem;width:18px;height:18px;border:1.5px solid var(--border2);border-radius:4px;background:var(--card)}
+.checklist li:hover::before{border-color:var(--accent)}
+.checklist li b{color:var(--text);font-weight:500}
+.checklist li span{color:var(--text2)}
+
+.flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.flow .step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem 1rem;font-size:.82rem;font-weight:500}
+.flow .arrow{color:var(--text3);font-size:.85rem}
+
+.copy-btn{position:absolute;top:.5rem;right:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.72rem;cursor:pointer;color:var(--text2);font-family:var(--font);transition:all .15s}
+.copy-btn:hover{background:var(--border);color:var(--text)}
+.rel{position:relative}
+
+.color-swatch{display:inline-block;width:28px;height:28px;border-radius:6px;border:1px solid var(--border);vertical-align:middle;margin-right:8px}
+
+.phase{display:flex;gap:1rem;margin:1rem 0;padding:1rem;background:var(--bg2);border-radius:var(--radius)}
+.phase-num{width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem;flex-shrink:0}
+.phase-content{flex:1}
+.phase-content strong{display:block;margin-bottom:.25rem}
+.phase-content span{color:var(--text2);font-size:.85rem}
+
+footer{text-align:center;padding:2rem 0;color:var(--text3);font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="badge">Elementor V4 — Atomic Editor</div>
+  <h1>Rammeverk for nye nettsider</h1>
+  <p>Et komplett system for å bygge konsistente, skalerbare nettsider med Elementor V4 sitt nye klassebaserte designsystem. Kopier variabel- og klassenavnene rett inn i nye prosjekter.</p>
+</header>
+
+<nav class="toc" id="toc">
+  <a href="#variables">Variabler</a>
+  <a href="#classes">Klasser</a>
+  <a href="#components">Komponenter</a>
+  <a href="#naming">Navngiving</a>
+  <a href="#responsive">Responsivt</a>
+  <a href="#workflow">Arbeidsflyt</a>
+  <a href="#checklist">Sjekkliste</a>
+  <a href="#tips">Tips & feller</a>
+</nav>
+
+<!-- ═══════ VARIABLER ═══════ -->
+<section id="variables">
+  <h2>Variabler <span>Steg 1 — sett opp først</span></h2>
+  <p class="intro">Variabler definerer verdiene i designsystemet ditt. Endrer du én variabel, oppdateres alt som bruker den — farger, fonter, spacing — over hele nettsiden.</p>
+
+  <h3>Fargevariabler</h3>
+  <p style="font-size:.88rem;color:var(--text2);margin-bottom:1rem">Erstatt verdiene med kundens faktiske merkevarefarger. Bruk alltid variabelnavn, aldri hardkodede hex-verdier i klassene.</p>
+
+  <table>
+    <thead><tr><th>Variabelnavn</th><th>Beskrivelse</th><th>Eksempel</th></tr></thead>
+    <tbody>
+      <tr><td><code>primary-color</code></td><td>Hovedfarge — knapper, lenker, CTA</td><td><span class="color-swatch" style="background:#002f3f"></span>#002f3f</td></tr>
+      <tr><td><code>primary-hover</code></td><td>Mørkere/lysere variant for hover</td><td><span class="color-swatch" style="background:#004d66"></span>#004d66</td></tr>
+      <tr><td><code>secondary-color</code></td><td>Sekundærfarge — aksenter, ikoner</td><td><span class="color-swatch" style="background:#0092cf"></span>#0092cf</td></tr>
+      <tr><td><code>dark</code></td><td>Mørk bakgrunn, footer, header</td><td><span class="color-swatch" style="background:#1a1a1a"></span>#1a1a1a</td></tr>
+      <tr><td><code>light</code></td><td>Lys bakgrunn, seksjoner</td><td><span class="color-swatch" style="background:#f8f8f6"></span>#f8f8f6</td></tr>
+      <tr><td><code>text-primary</code></td><td>Brødtekst</td><td><span class="color-swatch" style="background:#2c2c2a"></span>#2c2c2a</td></tr>
+      <tr><td><code>text-secondary</code></td><td>Undertekst, metadata</td><td><span class="color-swatch" style="background:#6b6b68"></span>#6b6b68</td></tr>
+      <tr><td><code>border-color</code></td><td>Linjer, skillelinjer</td><td><span class="color-swatch" style="background:#e0e0dc"></span>#e0e0dc</td></tr>
+      <tr><td><code>success</code></td><td>Bekreftelse, positive signaler</td><td><span class="color-swatch" style="background:#16a34a"></span>#16a34a</td></tr>
+      <tr><td><code>error</code></td><td>Feil, advarsel</td><td><span class="color-swatch" style="background:#dc2626"></span>#dc2626</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Typografivariabler</h3>
+  <table>
+    <thead><tr><th>Variabelnavn</th><th>Beskrivelse</th><th>Eksempel</th></tr></thead>
+    <tbody>
+      <tr><td><code>font-heading</code></td><td>Overskriftsfont</td><td>Instrument Serif</td></tr>
+      <tr><td><code>font-body</code></td><td>Brødtekstfont</td><td>Instrument Sans</td></tr>
+      <tr><td><code>font-size-base</code></td><td>Grunnstørrelse brødtekst</td><td>16px</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Spacing-variabler</h3>
+  <table>
+    <thead><tr><th>Variabelnavn</th><th>Verdi</th><th>Bruk</th></tr></thead>
+    <tbody>
+      <tr><td><code>space-xs</code></td><td>8px</td><td>Mellom ikoner og tekst</td></tr>
+      <tr><td><code>space-s</code></td><td>16px</td><td>Inni kort, mellom elementer</td></tr>
+      <tr><td><code>space-m</code></td><td>32px</td><td>Mellom innholdsblokker</td></tr>
+      <tr><td><code>space-l</code></td><td>64px</td><td>Seksjon-padding (topp/bunn)</td></tr>
+      <tr><td><code>space-xl</code></td><td>96px</td><td>Hero, stor seksjon-padding</td></tr>
+      <tr><td><code>container-width</code></td><td>1200px</td><td>Maks bredde innhold</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card info" style="margin-top:1rem">
+    <strong style="font-size:.88rem">💡 Sett opp i Elementor:</strong>
+    <span style="font-size:.85rem;color:var(--text2)"> Gå til <code>Class Manager</code> → <code>Variables</code>. Opprett alle variabler før du begynner å bygge klasser. Når du endrer en variabel, oppdateres alle klasser som refererer til den automatisk.</span>
+  </div>
+</section>
+
+<!-- ═══════ KLASSER ═══════ -->
+<section id="classes">
+  <h2>Globale klasser <span>Steg 2 — bygg designsystemet</span></h2>
+  <p class="intro">Globale klasser (grønne i V4) er gjenbrukbare stilsamlinger som brukes på tvers av hele nettsiden. Lokale klasser (rosa) brukes kun til unike unntak.</p>
+
+  <h3>Layout-klasser</h3>
+  <table>
+    <thead><tr><th>Klassenavn</th><th>Hva den gjør</th><th>CSS-ekvivalent</th></tr></thead>
+    <tbody>
+      <tr><td><code>flex-row</code></td><td>Flexbox horisontal</td><td>display:flex; flex-direction:row</td></tr>
+      <tr><td><code>flex-col</code></td><td>Flexbox vertikal</td><td>display:flex; flex-direction:column</td></tr>
+      <tr><td><code>flex-center</code></td><td>Sentrert begge akser</td><td>align-items:center; justify-content:center</td></tr>
+      <tr><td><code>flex-between</code></td><td>Jevnt fordelt</td><td>justify-content:space-between</td></tr>
+      <tr><td><code>flex-wrap</code></td><td>Bryt til ny linje</td><td>flex-wrap:wrap</td></tr>
+      <tr><td><code>gap-xs</code></td><td>Liten gap</td><td>gap: var(space-xs)</td></tr>
+      <tr><td><code>gap-s</code></td><td>Normal gap</td><td>gap: var(space-s)</td></tr>
+      <tr><td><code>gap-m</code></td><td>Medium gap</td><td>gap: var(space-m)</td></tr>
+      <tr><td><code>gap-l</code></td><td>Stor gap</td><td>gap: var(space-l)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Seksjon- og container-klasser</h3>
+  <table>
+    <thead><tr><th>Klassenavn</th><th>Beskrivelse</th></tr></thead>
+    <tbody>
+      <tr><td><code>section-pad-s</code></td><td>Padding topp/bunn: var(space-m) — for tette seksjoner</td></tr>
+      <tr><td><code>section-pad-m</code></td><td>Padding topp/bunn: var(space-l) — standardseksjon</td></tr>
+      <tr><td><code>section-pad-l</code></td><td>Padding topp/bunn: var(space-xl) — hero / stor seksjon</td></tr>
+      <tr><td><code>container-boxed</code></td><td>Max-width: var(container-width), auto margin</td></tr>
+      <tr><td><code>container-narrow</code></td><td>Max-width: 720px — for tekst, blogginnlegg</td></tr>
+      <tr><td><code>container-full</code></td><td>Full bredde — for bakgrunnsfarger/bilder</td></tr>
+      <tr><td><code>bg-light</code></td><td>Bakgrunn: var(light)</td></tr>
+      <tr><td><code>bg-dark</code></td><td>Bakgrunn: var(dark), tekst: hvit</td></tr>
+      <tr><td><code>bg-primary</code></td><td>Bakgrunn: var(primary-color), tekst: hvit</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Typografi-klasser</h3>
+  <table>
+    <thead><tr><th>Klassenavn</th><th>Størrelse</th><th>Font / vekt</th><th>Bruk</th></tr></thead>
+    <tbody>
+      <tr><td><code>heading-xl</code></td><td>48–56px</td><td>var(font-heading) / 600</td><td>Hero-overskrift</td></tr>
+      <tr><td><code>heading-l</code></td><td>36–40px</td><td>var(font-heading) / 600</td><td>Seksjonsoverskrift</td></tr>
+      <tr><td><code>heading-m</code></td><td>24–28px</td><td>var(font-heading) / 500</td><td>Kort-/blokkheading</td></tr>
+      <tr><td><code>heading-s</code></td><td>18–20px</td><td>var(font-body) / 500</td><td>Underoverskrift</td></tr>
+      <tr><td><code>body-default</code></td><td>var(font-size-base)</td><td>var(font-body) / 400</td><td>Brødtekst</td></tr>
+      <tr><td><code>body-small</code></td><td>14px</td><td>var(font-body) / 400</td><td>Hjelpetekst, metadata</td></tr>
+      <tr><td><code>label</code></td><td>12–13px</td><td>var(font-body) / 500, uppercase</td><td>Kategorier, tags</td></tr>
+      <tr><td><code>text-muted</code></td><td>inherit</td><td>color: var(text-secondary)</td><td>Undertekst</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Knapp-klasser</h3>
+  <table>
+    <thead><tr><th>Klassenavn</th><th>Stil</th><th>Hover-state</th></tr></thead>
+    <tbody>
+      <tr><td><code>btn-primary</code></td><td>Bakgrunn: var(primary-color), hvit tekst, border-radius 6px, padding 14px 28px</td><td>Bakgrunn: var(primary-hover)</td></tr>
+      <tr><td><code>btn-secondary</code></td><td>Gjennomsiktig, border 1px var(primary-color), tekst var(primary-color)</td><td>Bakgrunn: var(primary-color), hvit tekst</td></tr>
+      <tr><td><code>btn-ghost</code></td><td>Ingen border, tekst var(primary-color), underline hover</td><td>Tekst: var(primary-hover)</td></tr>
+      <tr><td><code>btn-small</code></td><td>Padding 8px 16px, font-size 14px</td><td>Kombineres med btn-primary/secondary</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Kort- og effekt-klasser</h3>
+  <table>
+    <thead><tr><th>Klassenavn</th><th>Beskrivelse</th></tr></thead>
+    <tbody>
+      <tr><td><code>card-default</code></td><td>Bakgrunn hvit, border 1px, border-radius 12px, padding var(space-s)</td></tr>
+      <tr><td><code>card-hover</code></td><td>Legger til subtle skygge + translateY(-2px) på hover</td></tr>
+      <tr><td><code>img-cover</code></td><td>object-fit: cover, width 100%, border-radius 8px</td></tr>
+      <tr><td><code>img-rounded</code></td><td>border-radius: 50% — for profilbilder</td></tr>
+      <tr><td><code>shadow-soft</code></td><td>box-shadow: 0 2px 12px rgba(0,0,0,.06)</td></tr>
+      <tr><td><code>divider</code></td><td>border-top 1px var(border-color), margin var(space-m) 0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card highlight" style="margin-top:1rem">
+    <strong style="font-size:.88rem">Kombiner klasser</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">V4 lar deg legge til flere Global Classes på ett element. En CTA-knapp kan ha <code>btn-primary</code> + <code>btn-small</code>. En seksjon kan ha <code>section-pad-m</code> + <code>bg-light</code> + <code>container-full</code>. Tenk komposisjon.</p>
+  </div>
+</section>
+
+<!-- ═══════ KOMPONENTER ═══════ -->
+<section id="components">
+  <h2>Komponenter <span>Steg 3 — gjenbrukbare blokker</span></h2>
+  <p class="intro">Komponenter er hele seksjoner/containere som synkroniserer globalt. Stiling er låst, men innhold (tekst, bilder, lenker) kan redigeres per instans via Component Properties.</p>
+
+  <h3>Standardkomponenter å bygge for hvert prosjekt</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4 style="margin-top:0">Header <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Logo (bilde-property)</li>
+        <li>Navigasjonslenker</li>
+        <li>CTA-knapp (tekst-property)</li>
+        <li>Mobil hamburger-meny</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">Footer <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Logo + kort beskrivelse</li>
+        <li>Kolonner med lenker</li>
+        <li>Sosiale medier-ikoner</li>
+        <li>Copyright-tekst (tekst-property)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">Hero-seksjon <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Overskrift (heading-xl)</li>
+        <li>Underoverskrift (body-default)</li>
+        <li>CTA-knapp(er)</li>
+        <li>Bakgrunnsbilde/video</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">CTA-boks <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Overskrift (heading-m)</li>
+        <li>Kort tekst</li>
+        <li>Knapp (btn-primary)</li>
+        <li>Valgfritt bakgrunnsbilde</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">Tjenestekort <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Ikon/bilde</li>
+        <li>Tittel (heading-s)</li>
+        <li>Beskrivelse (body-small)</li>
+        <li>Lenke/knapp</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">Kontaktskjema <span class="tag comp">Komponent</span></h4>
+      <ul>
+        <li>Overskrift + undertekst</li>
+        <li>Atomic Form-elementer</li>
+        <li>Suksess-/feilmelding (States)</li>
+        <li>Personvernlenke</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card info" style="margin-top:.5rem">
+    <strong style="font-size:.88rem">💡 Component Properties</strong>
+    <span style="font-size:.85rem;color:var(--text2)"> Eksponer kun de feltene kunden trenger å redigere (tekst, bilder, lenker). Alt annet — layout, spacing, fonter — er låst i komponenten og arves globalt.</span>
+  </div>
+</section>
+
+<!-- ═══════ NAVNGIVING ═══════ -->
+<section id="naming">
+  <h2>Navngivingskonvensjon <span>Hold det konsistent</span></h2>
+  <p class="intro">Velg ett system og bruk det på alle prosjekter. Her er formatet anbefalt for Nordover-prosjekter:</p>
+
+  <div class="card">
+    <h4 style="margin-top:0">Format</h4>
+    <div class="code-block"><span class="cm">/* Komponent-klasser */</span>
+btn-primary
+btn-secondary
+card-default
+card-hover
+hero-section
+nav-main
+
+<span class="cm">/* Layout / utility-klasser */</span>
+flex-row
+flex-col
+flex-center
+gap-s
+gap-m
+section-pad-m
+container-boxed
+
+<span class="cm">/* Typografi-klasser */</span>
+heading-xl
+heading-l
+heading-m
+body-default
+body-small
+label
+text-muted
+
+<span class="cm">/* Bakgrunn-klasser */</span>
+bg-light
+bg-dark
+bg-primary</div>
+  </div>
+
+  <h3>Regler</h3>
+  <ul>
+    <li>Alltid <strong>lowercase med bindestrek</strong> — aldri camelCase eller underscore</li>
+    <li>Beskrivende nok til at noen andre forstår — <code>btn-primary</code> ikke <code>bp1</code></li>
+    <li>Prefiks etter kategori: <code>btn-</code>, <code>card-</code>, <code>heading-</code>, <code>section-</code>, <code>flex-</code>, <code>bg-</code>, <code>gap-</code></li>
+    <li>Størrelser bruker <code>xs / s / m / l / xl</code> — ikke tallverdier i klassenavnet</li>
+    <li>Unngå kundenavn i klassenavn — de skal gjenbrukes på tvers av prosjekter</li>
+  </ul>
+
+  <div class="card warn">
+    <strong style="font-size:.88rem">⚠️ Ikke gjør dette</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">
+      <code>fjordShippingButton</code> — kundespesifikt, camelCase<br>
+      <code>section1</code> — sier ingenting om hva den gjør<br>
+      <code>blåKnapp</code> — beskriver utseende, ikke funksjon (hva om fargen endres?)<br>
+      <code>ml-32</code> — hardkodet verdi, bruk variabel i stedet
+    </p>
+  </div>
+</section>
+
+<!-- ═══════ RESPONSIVT ═══════ -->
+<section id="responsive">
+  <h2>Responsivt design <span>V4 sitt store fortrinn</span></h2>
+  <p class="intro">I V4 kan du justere hver eneste stilregel per enhet — du trenger ikke lenger skjule elementer og lage kopier for mobil.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4 style="margin-top:0">✅ Gjør dette i V4</h4>
+      <ul>
+        <li>Endre flex-direction fra row til column på mobil</li>
+        <li>Juster font-size per breakpoint direkte på klassen</li>
+        <li>Endre padding/margin per enhet</li>
+        <li>Endre gap-størrelse på mobil</li>
+        <li>Endre grid-kolonner per enhet</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">❌ Slutt med dette (V3-vaner)</h4>
+      <ul>
+        <li>Skjule elementer på mobil + lage duplikat</li>
+        <li>Egne «mobil-only»-seksjoner</li>
+        <li>Inline custom CSS for responsive tweaks</li>
+        <li>Bruke separate widgets for desktop vs mobil</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Responsive regler per klasse</h3>
+  <p style="font-size:.88rem;color:var(--text2)">Legg responsive-verdier <em>inn i</em> Global Class — ikke på individuelle elementer. Eksempel for <code>heading-xl</code>:</p>
+  <table>
+    <thead><tr><th>Breakpoint</th><th>Font-size</th><th>Line-height</th></tr></thead>
+    <tbody>
+      <tr><td>Desktop</td><td>56px</td><td>1.1</td></tr>
+      <tr><td>Tablet</td><td>40px</td><td>1.15</td></tr>
+      <tr><td>Mobil</td><td>32px</td><td>1.2</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th>Breakpoint</th><th>section-pad-m</th><th>section-pad-l</th></tr></thead>
+    <tbody>
+      <tr><td>Desktop</td><td>64px topp/bunn</td><td>96px topp/bunn</td></tr>
+      <tr><td>Tablet</td><td>48px</td><td>64px</td></tr>
+      <tr><td>Mobil</td><td>32px</td><td>48px</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════ ARBEIDSFLYT ═══════ -->
+<section id="workflow">
+  <h2>Arbeidsflyt <span>Fra brief til lansering</span></h2>
+  <p class="intro">Følg denne rekkefølgen for hvert nytt kundeprosjekt. De første timene brukes på fundament — det sparer deg for dager senere.</p>
+
+  <div class="phase">
+    <div class="phase-num">1</div>
+    <div class="phase-content">
+      <strong>Brief & kickoff</strong>
+      <span>Samle inn merkevarefarger, fonter, logo-filer. Definer alle <b>Variabler</b> i Elementor (farger, typografi, spacing). Importer fonter via Google Fonts eller custom uploads.</span>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-num">2</div>
+    <div class="phase-content">
+      <strong>Designsystem</strong>
+      <span>Bygg alle <b>Globale Klasser</b> fra denne guiden. Tilpass verdier til kundens visuell profil. Opprett <b>Komponenter</b> for header, footer, CTA, kort. Test alt på én enkelt side.</span>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-num">3</div>
+    <div class="phase-content">
+      <strong>Prototype / førsteside</strong>
+      <span>Bygg forsiden kun med klasser og komponenter. Bruk aldri lokal styling med mindre det er et genuint unntak. Hvis du oppdager behov for en ny klasse — lag den nå, ikke bruk lokal stil.</span>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-num">4</div>
+    <div class="phase-content">
+      <strong>Sideutbygging</strong>
+      <span>Resterende sider bygges ved å gjenbruke eksisterende klasser og komponenter. Side 2, 3, 4 osv. går betydelig raskere enn side 1.</span>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-num">5</div>
+    <div class="phase-content">
+      <strong>Kvalitetskontroll</strong>
+      <span>Åpne <b>Class Manager</b> → sjekk for ubrukte klasser, duplikater, og inkonsistente navn. Test responsivt på alle breakpoints. Sjekk ytelse (PageSpeed).</span>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="phase-num">6</div>
+    <div class="phase-content">
+      <strong>Overlevering til kunde</strong>
+      <span>Kunden redigerer kun innhold via Component Properties (tekst, bilder). Designsystemet er låst og konsistent. Dokumenter variabelnavnene ved behov.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SJEKKLISTE ═══════ -->
+<section id="checklist">
+  <h2>Sjekkliste <span>Bruk før lansering</span></h2>
+  <p class="intro">Gå gjennom denne listen for hvert prosjekt. Klikk for å huke av (lagres ikke — bruk som visuell gjennomgang).</p>
+
+  <h3>Designsystem</h3>
+  <ul class="checklist" id="cl1">
+    <li onclick="this.classList.toggle('done')"><b>Alle fargevariabler</b> <span>er definert og brukt — ingen hardkodede hex i klasser</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Typografi-variabler</b> <span>satt opp med riktige fonter og fallbacks</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Spacing-variabler</b> <span>brukes konsekvent i alle klasser</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Alle knappvarianter</b> <span>har hover-, focus- og active-states</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Class Manager</b> <span>— ingen ubrukte eller duplikate klasser</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Navngivingskonvensjon</b> <span>er fulgt konsistent — lowercase, bindestrek, beskrivende</span></li>
+  </ul>
+
+  <h3>Responsivt</h3>
+  <ul class="checklist" id="cl2">
+    <li onclick="this.classList.toggle('done')"><b>Alle sider testet</b> <span>på desktop, tablet og mobil</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Font-størrelser</b> <span>justert per breakpoint i klassene</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Seksjons-padding</b> <span>redusert på mobil</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Ingen skjulte duplikatelementer</b> <span>— alt løst med responsive stilregler</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Bilder</b> <span>har riktig aspect-ratio på alle enheter</span></li>
+  </ul>
+
+  <h3>Ytelse & kvalitet</h3>
+  <ul class="checklist" id="cl3">
+    <li onclick="this.classList.toggle('done')"><b>PageSpeed Insights</b> <span>score 85+ på mobil</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Bilder optimalisert</b> <span>— WebP, lazy loading, riktig dimensjon</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Ingen V3-widgets brukt</b> <span>der V4-element finnes</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Ingen inline custom CSS</b> <span>— alt løst med klasser/variabler</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Alle lenker fungerer</b> <span>og peker riktig</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Skjema tester OK</b> <span>— suksess/feil-states vises riktig</span></li>
+  </ul>
+
+  <h3>Klientoverlevering</h3>
+  <ul class="checklist" id="cl4">
+    <li onclick="this.classList.toggle('done')"><b>Component Properties</b> <span>er satt opp for redigerbare felt</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Ikke-admin brukere</b> <span>kan ikke endre Global Classes eller Variables</span></li>
+    <li onclick="this.classList.toggle('done')"><b>Favicon og OG-bilder</b> <span>er satt opp</span></li>
+    <li onclick="this.classList.toggle('done')"><b>SEO-titler og meta</b> <span>utfylt på alle sider</span></li>
+  </ul>
+</section>
+
+<!-- ═══════ TIPS ═══════ -->
+<section id="tips">
+  <h2>Tips & vanlige feller <span>Ting å huske</span></h2>
+
+  <div class="card highlight">
+    <strong style="font-size:.88rem">Global Class vs lokal stil</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">Tommelfingerregel: Hvis du setter en stil på et element og tenker «dette bruker jeg nok igjen» — lag en Global Class. Hvis du setter den samme lokale stilen på 2+ elementer, er det et tydelig signal om at det burde vært en klasse.</p>
+  </div>
+
+  <div class="card highlight">
+    <strong style="font-size:.88rem">V3 + V4 sameksistens</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">For nye sider: bruk V4 Atomic Elements + klasser. For eksisterende sider du ikke vil bygge om: behold V3, legg til V4 kun for nye seksjoner. V3-widgets støtter ikke klasser/variables, men fungerer fint ved siden av.</p>
+  </div>
+
+  <div class="card highlight">
+    <strong style="font-size:.88rem">States = hover/focus/active</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">Definer States <em>på klassen</em>, ikke på elementet. Da arver alle elementer med den klassen de samme interaktive tilstandene. hover-styling settes automatisk som focus-visible også — bra for tilgjengelighet.</p>
+  </div>
+
+  <div class="card highlight">
+    <strong style="font-size:.88rem">Farger i Class Manager</strong>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.25rem">Fargekodede indikatorer viser hvor en stil kommer fra: grønn = Global Class, rosa = lokal, grå = arvet. Klikk på indikatoren for å se kilde og løse konflikter.</p>
+  </div>
+
+  <div class="card warn">
+    <strong style="font-size:.88rem">⚠️ Unngå disse feilene</strong>
+    <ul style="font-size:.85rem;color:var(--text2);margin-top:.25rem">
+      <li>Bruke V3 Global Colors i stedet for V4 Variables — migrer til Variables</li>
+      <li>Lage for mange utility-klasser — hold deg til de som faktisk gjenbrukes</li>
+      <li>Glemme å sette responsive verdier i klassen — da ender du opp med lokal CSS</li>
+      <li>Navngi klasser etter utseende (<code>blue-box</code>) — navngi etter funksjon (<code>card-default</code>)</li>
+      <li>Ikke rydde i Class Manager — gjør det til slutt i hvert prosjekt</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Nordover AS — Elementor V4 Rammeverk — Oppdatert mars 2026
+</footer>
+
+</div>
+
+<script>
+// Sticky nav active state
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav.toc a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`nav.toc a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+sections.forEach(s => obs.observe(s));
+
+// Checklist toggle
+const style = document.createElement('style');
+style.textContent = '.checklist li.done::before{background:var(--accent);border-color:var(--accent)} .checklist li.done::after{content:"✓";position:absolute;left:3px;top:.55rem;color:#fff;font-size:12px;font-weight:600}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
